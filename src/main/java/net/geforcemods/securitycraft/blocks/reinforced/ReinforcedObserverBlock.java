@@ -40,7 +40,7 @@ public class ReinforcedObserverBlock extends ObserverBlock implements IReinforce
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState().with(FACING, vanillaState.get(FACING)).with(POWERED, vanillaState.get(POWERED));
+		return getVanillaBlock().getDefaultState().with(FACING, vanillaState.get(FACING)).with(POWERED, vanillaState.get(POWERED));
 	}
 
 	@Override

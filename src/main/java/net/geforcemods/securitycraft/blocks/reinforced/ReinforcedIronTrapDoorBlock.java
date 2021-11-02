@@ -111,6 +111,6 @@ public class ReinforcedIronTrapDoorBlock extends TrapDoorBlock implements IReinf
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState().with(HORIZONTAL_FACING, vanillaState.get(HORIZONTAL_FACING)).with(OPEN, false).with(HALF, vanillaState.get(HALF)).with(POWERED, false).with(WATERLOGGED, vanillaState.get(WATERLOGGED));
+		return getVanillaBlock().getDefaultState().with(HORIZONTAL_FACING, vanillaState.get(HORIZONTAL_FACING)).with(OPEN, vanillaState.get(OPEN)).with(HALF, vanillaState.get(HALF)).with(POWERED, vanillaState.get(POWERED)).with(WATERLOGGED, vanillaState.get(WATERLOGGED));
 	}
 }

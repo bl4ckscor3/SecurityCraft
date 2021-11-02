@@ -36,7 +36,7 @@ public class ReinforcedWallBlock extends WallBlock implements IReinforcedBlock
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState()
+		return getVanillaBlock().getDefaultState()
 				.with(UP, vanillaState.get(UP))
 				.with(WALL_HEIGHT_NORTH, vanillaState.get(WALL_HEIGHT_NORTH))
 				.with(WALL_HEIGHT_EAST, vanillaState.get(WALL_HEIGHT_EAST))

@@ -94,6 +94,6 @@ public class BaseReinforcedBlock extends OwnableBlock implements IReinforcedBloc
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState();
+		return getVanillaBlock().getDefaultState();
 	}
 }

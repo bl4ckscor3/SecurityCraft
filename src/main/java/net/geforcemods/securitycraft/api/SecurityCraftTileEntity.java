@@ -58,6 +58,7 @@ public class SecurityCraftTileEntity extends OwnableTileEntity implements ITicka
 
 	@Override
 	public void tick() {
+		super.tick();
 		if(intersectsEntities){
 			int x = pos.getX();
 			int y = pos.getY();

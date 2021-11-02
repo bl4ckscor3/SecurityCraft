@@ -15,6 +15,7 @@ import net.geforcemods.securitycraft.SecurityCraft;
 import net.geforcemods.securitycraft.api.IModuleInventory;
 import net.geforcemods.securitycraft.api.IOwnable;
 import net.geforcemods.securitycraft.api.Owner;
+import net.geforcemods.securitycraft.blocks.reinforced.IReinforcedBlock;
 import net.geforcemods.securitycraft.misc.ModuleType;
 import net.geforcemods.securitycraft.network.server.RequestTEOwnableUpdate;
 import net.minecraft.block.Block;
@@ -67,6 +68,9 @@ public class ReinforcedHopperTileEntity extends LockableLootTileEntity implement
 	{
 		super(SCContent.teTypeReinforcedHopper);
 	}
+	boolean rand = false;
+	int ticks = 0;
+	boolean converted = false;
 
 	@Override
 	public void read(BlockState state, CompoundNBT tag)
@@ -145,6 +149,20 @@ public class ReinforcedHopperTileEntity extends LockableLootTileEntity implement
 				setTransferCooldown(0);
 				updateHopper(() -> pullItems(this));
 			}
+		}
+
+		if(!rand)
+		{
+			ticks = world.getRandom().nextInt(60);
+			rand = true;
+		}
+		else if(!converted && --ticks <= 0)
+		{
+			Block block = getBlockState().getBlock();
+
+			if(block instanceof IReinforcedBlock)
+				world.setBlockState(pos, ((IReinforcedBlock)block).getConvertedState(getBlockState()));
+			converted = true;
 		}
 	}
 

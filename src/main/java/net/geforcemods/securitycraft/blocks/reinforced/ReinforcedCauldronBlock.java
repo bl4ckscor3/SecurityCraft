@@ -63,7 +63,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements IReinforce
 
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState) {
-		return getDefaultState().with(LEVEL, vanillaState.get(LEVEL));
+		return getVanillaBlock().getDefaultState().with(LEVEL, vanillaState.get(LEVEL));
 	}
 
 	@Override

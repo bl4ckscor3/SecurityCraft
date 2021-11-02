@@ -21,6 +21,7 @@ import net.geforcemods.securitycraft.network.server.RequestTEOwnableUpdate;
 import net.geforcemods.securitycraft.util.BlockUtils;
 import net.geforcemods.securitycraft.util.PlayerUtils;
 import net.geforcemods.securitycraft.util.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.entity.player.PlayerEntity;
@@ -60,7 +61,27 @@ public class KeypadChestTileEntity extends ChestTileEntity implements IPasswordP
 	{
 		super(SCContent.teTypeKeypadChest);
 	}
+	boolean rand = false;
+	int ticks = 0;
+	boolean converted = false;
+	@Override
+	public void tick()
+	{
+		super.tick();
+		if(!rand)
+		{
+			ticks = world.getRandom().nextInt(60);
+			rand = true;
+		}
+		else if(!converted && --ticks <= 0)
+		{
+			Block block = getBlockState().getBlock();
 
+			if(block instanceof KeypadChestBlock)
+				new KeypadChestBlock.Convertible().convert(null, world, pos);
+			converted = true;
+		}
+	}
 	/**
 	 * Writes a tile entity to NBT.
 	 * @return
@@ -120,6 +141,7 @@ public class KeypadChestTileEntity extends ChestTileEntity implements IPasswordP
 		return Utils.localize("block.securitycraft.keypad_chest");
 	}
 
+	@Override
 	protected void onOpenOrClose() {
 		super.onOpenOrClose();
 

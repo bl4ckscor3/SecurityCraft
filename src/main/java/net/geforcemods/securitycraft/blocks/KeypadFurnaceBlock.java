@@ -3,7 +3,6 @@ package net.geforcemods.securitycraft.blocks;
 import java.util.Random;
 
 import net.geforcemods.securitycraft.SCContent;
-import net.geforcemods.securitycraft.api.IOwnable;
 import net.geforcemods.securitycraft.api.IPasswordConvertible;
 import net.geforcemods.securitycraft.tileentity.KeypadFurnaceTileEntity;
 import net.geforcemods.securitycraft.util.ModuleUtils;
@@ -227,13 +226,12 @@ public class KeypadFurnaceBlock extends OwnableBlock {
 			BlockState state = world.getBlockState(pos);
 			Direction facing = state.get(FACING);
 			boolean lit = state.get(LIT);
-			FurnaceTileEntity furnace = (FurnaceTileEntity)world.getTileEntity(pos);
+			KeypadFurnaceTileEntity furnace = (KeypadFurnaceTileEntity)world.getTileEntity(pos);
 			CompoundNBT tag = furnace.write(new CompoundNBT());
 
 			furnace.clear();
-			world.setBlockState(pos, SCContent.KEYPAD_FURNACE.get().getDefaultState().with(FACING, facing).with(OPEN, false).with(LIT, lit));
-			((KeypadFurnaceTileEntity)world.getTileEntity(pos)).read(world.getBlockState(pos), tag);
-			((IOwnable) world.getTileEntity(pos)).setOwner(player.getUniqueID().toString(), player.getName().getString());
+			world.setBlockState(pos, Blocks.FURNACE.getDefaultState().with(FACING, facing).with(LIT, lit));
+			((FurnaceTileEntity)world.getTileEntity(pos)).read(world.getBlockState(pos), tag);
 			return true;
 		}
 	}

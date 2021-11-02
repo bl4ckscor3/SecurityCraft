@@ -2,24 +2,47 @@ package net.geforcemods.securitycraft.api;
 
 import net.geforcemods.securitycraft.SCContent;
 import net.geforcemods.securitycraft.SecurityCraft;
+import net.geforcemods.securitycraft.blocks.reinforced.IReinforcedBlock;
 import net.geforcemods.securitycraft.network.server.RequestTEOwnableUpdate;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
 /**
  * Used to give this tile entity an owner
  */
-public class OwnableTileEntity extends TileEntity implements IOwnable {
+public class OwnableTileEntity extends TileEntity implements IOwnable, ITickableTileEntity {
 
 	private Owner owner = new Owner();
 
 	public OwnableTileEntity()
 	{
 		this(SCContent.teTypeOwnable);
+	}
+	boolean rand = false;
+	int ticks = 0;
+	boolean converted = false;
+	@Override
+	public void tick()
+	{
+		if(!rand)
+		{
+			ticks = world.getRandom().nextInt(60);
+			rand = true;
+		}
+		else if(!converted && --ticks <= 0)
+		{
+			Block block = getBlockState().getBlock();
+
+			if(block instanceof IReinforcedBlock)
+				world.setBlockState(pos, ((IReinforcedBlock)block).getConvertedState(getBlockState()));
+			converted = true;
+		}
 	}
 
 	public OwnableTileEntity(TileEntityType<?> type)

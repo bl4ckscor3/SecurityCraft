@@ -3,7 +3,6 @@ package net.geforcemods.securitycraft.blocks;
 import java.util.Optional;
 
 import net.geforcemods.securitycraft.SCContent;
-import net.geforcemods.securitycraft.api.IOwnable;
 import net.geforcemods.securitycraft.api.IPasswordConvertible;
 import net.geforcemods.securitycraft.misc.ModuleType;
 import net.geforcemods.securitycraft.misc.OwnershipEvent;
@@ -238,30 +237,30 @@ public class KeypadChestBlock extends ChestBlock {
 			Direction facing = state.get(FACING);
 			ChestType type = state.get(TYPE);
 
-			convertChest(player, world, pos, facing, type);
+			convertChest(player, world, pos, facing, type, state.get(WATERLOGGED));
 
 			if(type != ChestType.SINGLE)
 			{
 				BlockPos newPos = pos.offset(getDirectionToAttached(state));
 				BlockState newState = world.getBlockState(newPos);
+				if(newState.isAir()) return true;
 				Direction newFacing = newState.get(FACING);
 				ChestType newType = newState.get(TYPE);
 
-				convertChest(player, world, newPos, newFacing, newType);
+				convertChest(player, world, newPos, newFacing, newType, newState.get(WATERLOGGED));
 			}
 
 			return true;
 		}
 
-		private void convertChest(PlayerEntity player, World world, BlockPos pos, Direction facing, ChestType type)
+		private void convertChest(PlayerEntity player, World world, BlockPos pos, Direction facing, ChestType type, boolean wl)
 		{
 			ChestTileEntity chest = (ChestTileEntity)world.getTileEntity(pos);
 			CompoundNBT tag = chest.write(new CompoundNBT());
 
 			chest.clear();
-			world.setBlockState(pos, SCContent.KEYPAD_CHEST.get().getDefaultState().with(FACING, facing).with(TYPE, type));
+			world.setBlockState(pos, Blocks.CHEST.getDefaultState().with(FACING, facing).with(TYPE, type).with(WATERLOGGED, wl));
 			((ChestTileEntity)world.getTileEntity(pos)).read(world.getBlockState(pos), tag);
-			((IOwnable) world.getTileEntity(pos)).setOwner(player.getUniqueID().toString(), player.getName().getString());
 		}
 	}
 }

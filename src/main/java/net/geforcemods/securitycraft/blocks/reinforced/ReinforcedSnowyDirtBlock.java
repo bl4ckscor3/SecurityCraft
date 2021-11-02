@@ -170,7 +170,7 @@ public class ReinforcedSnowyDirtBlock extends SnowyDirtBlock implements IReinfor
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState().with(SNOWY, vanillaState.get(SNOWY));
+		return getVanillaBlock().getDefaultState().with(SNOWY, vanillaState.get(SNOWY));
 	}
 
 	@Override

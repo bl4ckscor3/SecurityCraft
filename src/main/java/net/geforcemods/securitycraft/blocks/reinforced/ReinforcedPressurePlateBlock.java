@@ -93,7 +93,7 @@ public class ReinforcedPressurePlateBlock extends PressurePlateBlock implements 
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState();
+		return getVanillaBlock().getDefaultState();
 	}
 
 	@Override

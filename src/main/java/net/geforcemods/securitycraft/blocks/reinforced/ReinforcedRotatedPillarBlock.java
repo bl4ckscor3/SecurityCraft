@@ -64,6 +64,6 @@ public class ReinforcedRotatedPillarBlock extends BaseReinforcedBlock
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState().with(AXIS, vanillaState.get(RotatedPillarBlock.AXIS));
+		return getVanillaBlock().getDefaultState().with(AXIS, vanillaState.get(RotatedPillarBlock.AXIS));
 	}
 }

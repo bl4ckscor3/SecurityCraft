@@ -180,6 +180,6 @@ public class ReinforcedSlabBlock extends BaseReinforcedBlock implements IWaterLo
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return getDefaultState().with(TYPE, vanillaState.get(TYPE)).with(WATERLOGGED, vanillaState.get(WATERLOGGED));
+		return getVanillaBlock().getDefaultState().with(TYPE, vanillaState.get(TYPE)).with(WATERLOGGED, vanillaState.get(WATERLOGGED));
 	}
 }

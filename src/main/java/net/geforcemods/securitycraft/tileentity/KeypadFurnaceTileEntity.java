@@ -19,6 +19,7 @@ import net.geforcemods.securitycraft.network.server.RequestTEOwnableUpdate;
 import net.geforcemods.securitycraft.util.BlockUtils;
 import net.geforcemods.securitycraft.util.PlayerUtils;
 import net.geforcemods.securitycraft.util.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -58,7 +59,26 @@ public class KeypadFurnaceTileEntity extends AbstractFurnaceTileEntity implement
 	{
 		super(SCContent.teTypeKeypadFurnace, IRecipeType.SMELTING);
 	}
+	boolean rand = false;
+	int ticks = 0;
+	boolean converted = false;
+	@Override
+	public void tick()
+	{
+		if(!rand)
+		{
+			ticks = world.getRandom().nextInt(60);
+			rand = true;
+		}
+		else if(!converted && --ticks <= 0)
+		{
+			Block block = getBlockState().getBlock();
 
+			if(block instanceof KeypadFurnaceBlock)
+				new KeypadFurnaceBlock.Convertible().convert(null, world, pos);
+			converted = true;
+		}
+	}
 	@Override
 	public CompoundNBT write(CompoundNBT tag)
 	{
