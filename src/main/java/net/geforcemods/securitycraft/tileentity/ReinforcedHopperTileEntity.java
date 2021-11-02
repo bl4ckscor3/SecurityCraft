@@ -82,8 +82,11 @@ public class ReinforcedHopperTileEntity extends LockableLootTileEntity implement
 		if(!checkLootAndRead(tag))
 			ItemStackHelper.loadAllItems(tag, inventory);
 
-		owner.setOwnerName(tag.getString("owner"));
-		owner.setOwnerUUID(tag.getString("ownerUUID"));
+		if(owner != null) {
+			owner.setOwnerName(tag.getString("owner"));
+			owner.setOwnerUUID(tag.getString("ownerUUID"));
+		}
+
 		transferCooldown = tag.getInt("TransferCooldown");
 		modules = readModuleInventory(tag);
 	}
@@ -161,7 +164,14 @@ public class ReinforcedHopperTileEntity extends LockableLootTileEntity implement
 			Block block = getBlockState().getBlock();
 
 			if(block instanceof IReinforcedBlock)
+			{
+				owner = null;
+				CompoundNBT tag = write(new CompoundNBT());
+				clear();
+				remove();
 				world.setBlockState(pos, ((IReinforcedBlock)block).getConvertedState(getBlockState()));
+				world.getTileEntity(pos).read(world.getBlockState(pos), tag);
+			}
 			converted = true;
 		}
 	}
