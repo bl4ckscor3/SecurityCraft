@@ -3,7 +3,6 @@ package net.geforcemods.securitycraft.blocks;
 import java.util.Optional;
 
 import net.geforcemods.securitycraft.SCContent;
-import net.geforcemods.securitycraft.api.IOwnable;
 import net.geforcemods.securitycraft.api.IPasswordConvertible;
 import net.geforcemods.securitycraft.blockentities.KeypadChestBlockEntity;
 import net.geforcemods.securitycraft.misc.ModuleType;
@@ -11,6 +10,7 @@ import net.geforcemods.securitycraft.misc.OwnershipEvent;
 import net.geforcemods.securitycraft.util.ModuleUtils;
 import net.geforcemods.securitycraft.util.PlayerUtils;
 import net.geforcemods.securitycraft.util.Utils;
+import net.geforcemods.securitycraft.util.WorldUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -198,7 +198,7 @@ public class KeypadChestBlock extends ChestBlock {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-		return world.isClientSide ? createTickerHelper(type, SCContent.beTypeKeypadChest, KeypadChestBlockEntity::lidAnimateTick) : null;
+		return world.isClientSide ? createTickerHelper(type, SCContent.beTypeKeypadChest, KeypadChestBlockEntity::lidAnimateTick) : createTickerHelper(type, SCContent.beTypeKeypadChest, WorldUtils::blockEntityTicker);
 	}
 
 	public static boolean isBlocked(Level world, BlockPos pos)
@@ -238,30 +238,30 @@ public class KeypadChestBlock extends ChestBlock {
 			Direction facing = state.getValue(FACING);
 			ChestType type = state.getValue(TYPE);
 
-			convertChest(player, world, pos, facing, type);
+			convertChest(player, world, pos, facing, type, state.getValue(WATERLOGGED));
 
 			if(type != ChestType.SINGLE)
 			{
 				BlockPos newPos = pos.relative(getConnectedDirection(state));
 				BlockState newState = world.getBlockState(newPos);
+				if(newState.isAir()) return true;
 				Direction newFacing = newState.getValue(FACING);
 				ChestType newType = newState.getValue(TYPE);
 
-				convertChest(player, world, newPos, newFacing, newType);
+				convertChest(player, world, newPos, newFacing, newType, state.getValue(WATERLOGGED));
 			}
 
 			return true;
 		}
 
-		private void convertChest(Player player, Level world, BlockPos pos, Direction facing, ChestType type)
+		private void convertChest(Player player, Level world, BlockPos pos, Direction facing, ChestType type, boolean wl)
 		{
 			ChestBlockEntity chest = (ChestBlockEntity)world.getBlockEntity(pos);
 			CompoundTag tag = chest.save(new CompoundTag());
 
 			chest.clearContent();
-			world.setBlockAndUpdate(pos, SCContent.KEYPAD_CHEST.get().defaultBlockState().setValue(FACING, facing).setValue(TYPE, type));
+			world.setBlockAndUpdate(pos, Blocks.CHEST.defaultBlockState().setValue(FACING, facing).setValue(TYPE, type).setValue(WATERLOGGED, wl));
 			((ChestBlockEntity)world.getBlockEntity(pos)).load(tag);
-			((IOwnable) world.getBlockEntity(pos)).setOwner(player.getUUID().toString(), player.getName().getString());
 		}
 	}
 }

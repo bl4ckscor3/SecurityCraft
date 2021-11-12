@@ -1,8 +1,12 @@
 package net.geforcemods.securitycraft.blocks.reinforced;
 
+import javax.annotation.Nullable;
+
+import net.geforcemods.securitycraft.SCContent;
 import net.geforcemods.securitycraft.api.OwnableBlockEntity;
 import net.geforcemods.securitycraft.misc.OwnershipEvent;
 import net.geforcemods.securitycraft.util.BlockUtils;
+import net.geforcemods.securitycraft.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +21,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.material.FluidState;
@@ -105,6 +111,15 @@ public class ReinforcedIronTrapDoorBlock extends TrapDoorBlock implements IReinf
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return defaultBlockState().setValue(FACING, vanillaState.getValue(FACING)).setValue(OPEN, false).setValue(HALF, vanillaState.getValue(HALF)).setValue(POWERED, false).setValue(WATERLOGGED, vanillaState.getValue(WATERLOGGED));
+		return getVanillaBlock().defaultBlockState().setValue(FACING, vanillaState.getValue(FACING)).setValue(OPEN, vanillaState.getValue(OPEN)).setValue(HALF, vanillaState.getValue(HALF)).setValue(POWERED, vanillaState.getValue(POWERED)).setValue(WATERLOGGED, vanillaState.getValue(WATERLOGGED));
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+		return world.isClientSide ? null : createTickerHelper(type, SCContent.beTypeOwnable, WorldUtils::blockEntityTicker);
+	}
+	@Nullable
+	public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> p_152133_, BlockEntityType<E> p_152134_, BlockEntityTicker<? super E> p_152135_) {
+		return p_152134_ == p_152133_ ? (BlockEntityTicker<A>)p_152135_ : null;
 	}
 }

@@ -65,7 +65,7 @@ public class ReinforcedButtonBlock extends ButtonBlock implements IReinforcedBlo
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return defaultBlockState().setValue(FACE, vanillaState.getValue(FACE)).setValue(FACING, vanillaState.getValue(FACING)).setValue(POWERED, vanillaState.getValue(POWERED));
+		return getVanillaBlock().defaultBlockState().setValue(FACE, vanillaState.getValue(FACE)).setValue(FACING, vanillaState.getValue(FACING)).setValue(POWERED, vanillaState.getValue(POWERED));
 	}
 
 	@Override

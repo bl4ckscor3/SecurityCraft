@@ -3,12 +3,12 @@ package net.geforcemods.securitycraft.blocks;
 import java.util.Random;
 
 import net.geforcemods.securitycraft.SCContent;
-import net.geforcemods.securitycraft.api.IOwnable;
 import net.geforcemods.securitycraft.api.IPasswordConvertible;
 import net.geforcemods.securitycraft.blockentities.KeypadFurnaceBlockEntity;
 import net.geforcemods.securitycraft.util.ModuleUtils;
 import net.geforcemods.securitycraft.util.PlayerUtils;
 import net.geforcemods.securitycraft.util.Utils;
+import net.geforcemods.securitycraft.util.WorldUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -188,7 +187,7 @@ public class KeypadFurnaceBlock extends OwnableBlock {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-		return world.isClientSide ? null : createTickerHelper(type, SCContent.beTypeKeypadFurnace, KeypadFurnaceBlockEntity::serverTick);
+		return world.isClientSide ? null : createTickerHelper(type, SCContent.beTypeKeypadFurnace, WorldUtils::blockEntityTicker);
 	}
 
 	@Override
@@ -217,13 +216,12 @@ public class KeypadFurnaceBlock extends OwnableBlock {
 			BlockState state = world.getBlockState(pos);
 			Direction facing = state.getValue(FACING);
 			boolean lit = state.getValue(LIT);
-			FurnaceBlockEntity furnace = (FurnaceBlockEntity)world.getBlockEntity(pos);
+			KeypadFurnaceBlockEntity furnace = (KeypadFurnaceBlockEntity)world.getBlockEntity(pos);
 			CompoundTag tag = furnace.save(new CompoundTag());
 
 			furnace.clearContent();
-			world.setBlockAndUpdate(pos, SCContent.KEYPAD_FURNACE.get().defaultBlockState().setValue(FACING, facing).setValue(OPEN, false).setValue(LIT, lit));
-			((KeypadFurnaceBlockEntity)world.getBlockEntity(pos)).load(tag);
-			((IOwnable) world.getBlockEntity(pos)).setOwner(player.getUUID().toString(), player.getName().getString());
+			world.setBlockAndUpdate(pos, Blocks.FURNACE.defaultBlockState().setValue(FACING, facing).setValue(LIT, lit));
+			WorldUtils.addScheduledTask(world, ()->world.getBlockEntity(pos).load(tag));
 			return true;
 		}
 	}

@@ -153,7 +153,7 @@ public class ReinforcedCauldronBlock extends AbstractCauldronBlock implements IR
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return defaultBlockState();
+		return getVanillaBlock().defaultBlockState();
 	}
 
 	@Override

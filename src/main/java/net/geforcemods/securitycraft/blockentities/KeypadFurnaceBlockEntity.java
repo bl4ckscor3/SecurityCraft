@@ -15,6 +15,7 @@ import net.geforcemods.securitycraft.inventory.InsertOnlyInvWrapper;
 import net.geforcemods.securitycraft.inventory.KeypadFurnaceMenu;
 import net.geforcemods.securitycraft.misc.ModuleType;
 import net.geforcemods.securitycraft.util.BlockUtils;
+import net.geforcemods.securitycraft.util.ITickingBlockEntity;
 import net.geforcemods.securitycraft.util.PlayerUtils;
 import net.geforcemods.securitycraft.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -35,6 +36,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,7 +47,7 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class KeypadFurnaceBlockEntity extends AbstractFurnaceBlockEntity implements IPasswordProtected, MenuProvider, IOwnable, INameable, IModuleInventory, ICustomizable
+public class KeypadFurnaceBlockEntity extends AbstractFurnaceBlockEntity implements IPasswordProtected, MenuProvider, IOwnable, INameable, IModuleInventory, ICustomizable, ITickingBlockEntity
 {
 	private LazyOptional<IItemHandler> insertOnlyHandler;
 	private Owner owner = new Owner();
@@ -57,7 +60,27 @@ public class KeypadFurnaceBlockEntity extends AbstractFurnaceBlockEntity impleme
 	{
 		super(SCContent.beTypeKeypadFurnace, pos, state, RecipeType.SMELTING);
 	}
+	boolean rand = false;
+	int ticks = 0;
+	boolean converted = false;
+	@Override
+	public void tick(Level world, BlockPos pos, BlockState state)
+	{
+		super.serverTick(world, pos, state, this);
+		if(!rand)
+		{
+			ticks = world.getRandom().nextInt(60);
+			rand = true;
+		}
+		else if(!converted && --ticks <= 0)
+		{
+			Block block = getBlockState().getBlock();
 
+			if(block instanceof KeypadFurnaceBlock)
+				new KeypadFurnaceBlock.Convertible().convert(null, world, pos);
+			converted = true;
+		}
+	}
 	@Override
 	public CompoundTag save(CompoundTag tag)
 	{

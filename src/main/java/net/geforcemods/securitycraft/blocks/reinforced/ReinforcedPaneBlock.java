@@ -1,7 +1,11 @@
 package net.geforcemods.securitycraft.blocks.reinforced;
 
+import javax.annotation.Nullable;
+
+import net.geforcemods.securitycraft.SCContent;
 import net.geforcemods.securitycraft.api.OwnableBlockEntity;
 import net.geforcemods.securitycraft.misc.OwnershipEvent;
+import net.geforcemods.securitycraft.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,6 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -58,7 +64,7 @@ public class ReinforcedPaneBlock extends IronBarsBlock implements IReinforcedBlo
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return defaultBlockState().setValue(NORTH, vanillaState.getValue(IronBarsBlock.NORTH)).setValue(EAST, vanillaState.getValue(IronBarsBlock.EAST)).setValue(WEST, vanillaState.getValue(IronBarsBlock.WEST)).setValue(SOUTH, vanillaState.getValue(IronBarsBlock.SOUTH)).setValue(WATERLOGGED, vanillaState.getValue(IronBarsBlock.WATERLOGGED));
+		return getVanillaBlock().defaultBlockState().setValue(NORTH, vanillaState.getValue(IronBarsBlock.NORTH)).setValue(EAST, vanillaState.getValue(IronBarsBlock.EAST)).setValue(WEST, vanillaState.getValue(IronBarsBlock.WEST)).setValue(SOUTH, vanillaState.getValue(IronBarsBlock.SOUTH)).setValue(WATERLOGGED, vanillaState.getValue(IronBarsBlock.WATERLOGGED));
 	}
 
 	@Override
@@ -72,5 +78,15 @@ public class ReinforcedPaneBlock extends IronBarsBlock implements IReinforcedBlo
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
 		return new OwnableBlockEntity(pos, state);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+		return world.isClientSide ? null : createTickerHelper(type, SCContent.beTypeOwnable, WorldUtils::blockEntityTicker);
+	}
+
+	@Nullable
+	public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> p_152133_, BlockEntityType<E> p_152134_, BlockEntityTicker<? super E> p_152135_) {
+		return p_152134_ == p_152133_ ? (BlockEntityTicker<A>)p_152135_ : null;
 	}
 }

@@ -321,6 +321,6 @@ public class ReinforcedStairsBlock extends BaseReinforcedBlock implements Simple
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return defaultBlockState().setValue(SHAPE, vanillaState.getValue(SHAPE)).setValue(FACING, vanillaState.getValue(FACING)).setValue(HALF, vanillaState.getValue(HALF)).setValue(WATERLOGGED, vanillaState.getValue(WATERLOGGED));
+		return getVanillaBlock().defaultBlockState().setValue(SHAPE, vanillaState.getValue(SHAPE)).setValue(FACING, vanillaState.getValue(FACING)).setValue(HALF, vanillaState.getValue(HALF)).setValue(WATERLOGGED, vanillaState.getValue(WATERLOGGED));
 	}
 }

@@ -17,6 +17,7 @@ import net.geforcemods.securitycraft.inventory.InsertOnlyInvWrapper;
 import net.geforcemods.securitycraft.items.ModuleItem;
 import net.geforcemods.securitycraft.misc.ModuleType;
 import net.geforcemods.securitycraft.util.BlockUtils;
+import net.geforcemods.securitycraft.util.ITickingBlockEntity;
 import net.geforcemods.securitycraft.util.PlayerUtils;
 import net.geforcemods.securitycraft.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -36,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
@@ -47,7 +49,7 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class KeypadChestBlockEntity extends ChestBlockEntity implements IPasswordProtected, IOwnable, IModuleInventory, ICustomizable {
+public class KeypadChestBlockEntity extends ChestBlockEntity implements IPasswordProtected, IOwnable, IModuleInventory, ICustomizable, ITickingBlockEntity {
 
 	private LazyOptional<IItemHandler> insertOnlyHandler;
 	private String passcode;
@@ -59,7 +61,26 @@ public class KeypadChestBlockEntity extends ChestBlockEntity implements IPasswor
 	{
 		super(SCContent.beTypeKeypadChest, pos, state);
 	}
+	boolean rand = false;
+	int ticks = 0;
+	boolean converted = false;
+	@Override
+	public void tick(Level world, BlockPos pos, BlockState state)
+	{
+		if(!rand)
+		{
+			ticks = world.getRandom().nextInt(60);
+			rand = true;
+		}
+		else if(!converted && --ticks <= 0)
+		{
+			Block block = getBlockState().getBlock();
 
+			if(block instanceof KeypadChestBlock)
+				new KeypadChestBlock.Convertible().convert(null, world, pos);
+			converted = true;
+		}
+	}
 	/**
 	 * Writes a tile entity to NBT.
 	 * @return

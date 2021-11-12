@@ -83,7 +83,7 @@ public class HorizontalReinforcedIronBars extends BaseReinforcedBlock implements
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return defaultBlockState().setValue(WATERLOGGED, vanillaState.getValue(SlabBlock.WATERLOGGED));
+		return getVanillaBlock().defaultBlockState().setValue(WATERLOGGED, vanillaState.getValue(SlabBlock.WATERLOGGED));
 	}
 
 	@Override

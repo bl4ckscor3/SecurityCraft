@@ -2,8 +2,12 @@ package net.geforcemods.securitycraft.blocks.reinforced;
 
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
+import net.geforcemods.securitycraft.SCContent;
 import net.geforcemods.securitycraft.api.OwnableBlockEntity;
 import net.geforcemods.securitycraft.misc.OwnershipEvent;
+import net.geforcemods.securitycraft.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -36,7 +42,7 @@ public class ReinforcedWallBlock extends WallBlock implements IReinforcedBlock, 
 	@Override
 	public BlockState getConvertedState(BlockState vanillaState)
 	{
-		return defaultBlockState()
+		return getVanillaBlock().defaultBlockState()
 				.setValue(UP, vanillaState.getValue(UP))
 				.setValue(NORTH_WALL, vanillaState.getValue(NORTH_WALL))
 				.setValue(EAST_WALL, vanillaState.getValue(EAST_WALL))
@@ -56,5 +62,15 @@ public class ReinforcedWallBlock extends WallBlock implements IReinforcedBlock, 
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
 		return new OwnableBlockEntity(pos, state);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+		return world.isClientSide ? null : createTickerHelper(type, SCContent.beTypeOwnable, WorldUtils::blockEntityTicker);
+	}
+
+	@Nullable
+	public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> p_152133_, BlockEntityType<E> p_152134_, BlockEntityTicker<? super E> p_152135_) {
+		return p_152134_ == p_152133_ ? (BlockEntityTicker<A>)p_152135_ : null;
 	}
 }

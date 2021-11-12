@@ -58,6 +58,7 @@ public class SecurityCraftBlockEntity extends OwnableBlockEntity implements INam
 
 	@Override
 	public void tick(Level world, BlockPos pos, BlockState state) {
+		super.tick(level, pos, state);
 		if(intersectsEntities){
 			int x = worldPosition.getX();
 			int y = worldPosition.getY();
