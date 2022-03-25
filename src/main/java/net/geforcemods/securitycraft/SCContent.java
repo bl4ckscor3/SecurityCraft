@@ -2206,6 +2206,8 @@ public class SCContent {
 	public static BlockEntityType<SonicSecuritySystemBlockEntity> beTypeSonicSecuritySystem;
 	@ObjectHolder(SecurityCraft.MODID + ":block_change_detector")
 	public static BlockEntityType<BlockChangeDetectorBlockEntity> beTypeBlockChangeDetector;
+	@ObjectHolder(SecurityCraft.MODID + ":frame")
+	public static BlockEntityType<OwnableBlockEntity> beTypeFrame;
 
 	//entity types
 	@ObjectHolder(SecurityCraft.MODID + ":bouncingbetty")

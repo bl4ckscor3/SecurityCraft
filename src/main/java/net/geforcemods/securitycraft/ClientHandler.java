@@ -24,6 +24,7 @@ import net.geforcemods.securitycraft.renderers.BlockPocketManagerRenderer;
 import net.geforcemods.securitycraft.renderers.BouncingBettyRenderer;
 import net.geforcemods.securitycraft.renderers.BulletRenderer;
 import net.geforcemods.securitycraft.renderers.DisguisableBlockEntityRenderer;
+import net.geforcemods.securitycraft.renderers.FrameRenderer;
 import net.geforcemods.securitycraft.renderers.IMSBombRenderer;
 import net.geforcemods.securitycraft.renderers.KeypadChestRenderer;
 import net.geforcemods.securitycraft.renderers.ProjectorRenderer;
@@ -349,6 +350,7 @@ public class ClientHandler {
 		event.registerEntityRenderer(SCContent.eTypeBullet, BulletRenderer::new);
 		//normal renderers
 		event.registerBlockEntityRenderer(SCContent.beTypeBlockPocketManager, BlockPocketManagerRenderer::new);
+		event.registerBlockEntityRenderer(SCContent.beTypeFrame, FrameRenderer::new);
 		event.registerBlockEntityRenderer(SCContent.beTypeKeypadChest, KeypadChestRenderer::new);
 		event.registerBlockEntityRenderer(SCContent.beTypeProjector, ProjectorRenderer::new);
 		event.registerBlockEntityRenderer(SCContent.beTypeReinforcedPiston, ReinforcedPistonHeadRenderer::new);

@@ -85,7 +85,6 @@ public class CameraMonitorItem extends Item {
 		ItemStack stack = player.getItemInHand(hand);
 
 		if (!stack.hasTag() || !hasCameraAdded(stack.getTag())) {
-			PlayerUtils.sendMessageToPlayer(player, Utils.localize(SCContent.CAMERA_MONITOR.get().getDescriptionId()), Utils.localize("messages.securitycraft:cameraMonitor.rightclickToView"), ChatFormatting.RED);
 			return InteractionResultHolder.pass(stack);
 		}
 
