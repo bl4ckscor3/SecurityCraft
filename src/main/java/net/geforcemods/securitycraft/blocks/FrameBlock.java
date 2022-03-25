@@ -2,6 +2,7 @@ package net.geforcemods.securitycraft.blocks;
 
 import net.geforcemods.securitycraft.ClientHandler;
 import net.geforcemods.securitycraft.SCContent;
+import net.geforcemods.securitycraft.api.IOwnable;
 import net.geforcemods.securitycraft.api.OwnableBlockEntity;
 import net.geforcemods.securitycraft.items.CameraMonitorItem;
 import net.geforcemods.securitycraft.util.PlayerUtils;
@@ -58,21 +59,23 @@ public class FrameBlock extends OwnableBlock {
 
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		ItemStack stack = player.getItemInHand(hand);
+		if (level.getBlockEntity(pos) instanceof IOwnable ownable && ownable.getOwner().isOwner(player)) {
+			ItemStack stack = player.getItemInHand(hand);
 
-		if (stack.getItem() instanceof CameraMonitorItem monitor) {
-			if (monitor.getNumberOfCamerasBound(stack.getOrCreateTag()) == 0)
-				PlayerUtils.sendMessageToPlayer(player, Utils.localize(SCContent.FRAME.get().getDescriptionId()), new TextComponent("You have not bound a camera that can be viewed yet."), ChatFormatting.RED);
-			else {
-				if (!state.getValue(ACTIVE)) {
-					if (level.isClientSide)
-						ClientHandler.displayCameraMonitorGui(player.getInventory(), (CameraMonitorItem) stack.getItem(), stack.getTag(), pos, true);
+			if (stack.getItem() instanceof CameraMonitorItem monitor) {
+				if (monitor.getNumberOfCamerasBound(stack.getOrCreateTag()) == 0)
+					PlayerUtils.sendMessageToPlayer(player, Utils.localize(SCContent.FRAME.get().getDescriptionId()), new TextComponent("You have not bound a camera that can be viewed yet."), ChatFormatting.RED);
+				else {
+					if (!state.getValue(ACTIVE)) {
+						if (level.isClientSide)
+							ClientHandler.displayCameraMonitorGui(player.getInventory(), (CameraMonitorItem) stack.getItem(), stack.getTag(), pos, true);
+					}
+					else
+						level.setBlockAndUpdate(pos, state.setValue(ACTIVE, false));
 				}
-				else
-					level.setBlockAndUpdate(pos, state.setValue(ACTIVE, false));
-			}
 
-			return InteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
+			}
 		}
 
 		return InteractionResult.PASS;
