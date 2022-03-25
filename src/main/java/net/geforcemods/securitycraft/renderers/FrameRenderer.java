@@ -30,7 +30,7 @@ public class FrameRenderer implements BlockEntityRenderer<OwnableBlockEntity> {
 	public void render(OwnableBlockEntity be, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		BlockState state = be.getBlockState();
 
-		if (!state.getValue(FrameBlock.ACTIVE)) {
+		if (state.getValue(FrameBlock.ACTIVE)) {
 			Direction dir = state.getValue(FrameBlock.FACING);
 			float px = 1.0F / 16.0F;
 			float v0 = 1.0F * px;
