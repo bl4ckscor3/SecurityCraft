@@ -41,7 +41,7 @@ public class FrameBlock extends OwnableBlock {
 
 	public FrameBlock(Block.Properties properties) {
 		super(properties);
-		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false));
 	}
 
 	@Override
