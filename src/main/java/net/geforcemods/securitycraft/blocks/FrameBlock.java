@@ -64,7 +64,7 @@ public class FrameBlock extends OwnableBlock {
 
 			if (stack.getItem() instanceof CameraMonitorItem monitor) {
 				if (monitor.getNumberOfCamerasBound(stack.getOrCreateTag()) == 0)
-					PlayerUtils.sendMessageToPlayer(player, Utils.localize(SCContent.FRAME.get().getDescriptionId()), new TextComponent("You have not bound a camera that can be viewed yet."), ChatFormatting.RED);
+					PlayerUtils.sendMessageToPlayer(player, Utils.localize(SCContent.FRAME.get().getDescriptionId()), new TextComponent("You have not bound a camera yet, so nothing can be displayed."), ChatFormatting.RED);
 				else {
 					if (!state.getValue(ACTIVE)) {
 						if (level.isClientSide)
@@ -76,9 +76,12 @@ public class FrameBlock extends OwnableBlock {
 
 				return InteractionResult.SUCCESS;
 			}
+
+			return InteractionResult.PASS;
 		}
 
-		return InteractionResult.PASS;
+		PlayerUtils.sendMessageToPlayer(player, Utils.localize(SCContent.FRAME.get().getDescriptionId()), new TextComponent("This is not your Frame."), ChatFormatting.RED);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

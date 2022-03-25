@@ -30,7 +30,8 @@ import net.minecraftforge.client.gui.widget.ExtendedButton;
 
 public class CameraMonitorScreen extends Screen {
 	private static final ResourceLocation TEXTURE = new ResourceLocation("securitycraft:textures/gui/container/blank.png");
-	private final TranslatableComponent selectCameras = Utils.localize("gui.securitycraft:monitor.selectCameras");
+	private final TranslatableComponent titleWithoutFrame = Utils.localize("gui.securitycraft:monitor.selectCameras");
+	private final TextComponent titleWithFrame = new TextComponent("Select the camera to display:");
 	private Inventory playerInventory;
 	private CameraMonitorItem cameraMonitor;
 	private CompoundTag nbtTag;
@@ -133,13 +134,14 @@ public class CameraMonitorScreen extends Screen {
 	public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
 		int startX = (width - xSize) / 2;
 		int startY = (height - ySize) / 2;
+		Component title = frame ? titleWithFrame : titleWithoutFrame;
 
 		renderBackground(pose);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem._setShaderTexture(0, TEXTURE);
 		blit(pose, startX, startY, 0, 0, xSize, ySize);
 		super.render(pose, mouseX, mouseY, partialTicks);
-		font.draw(pose, selectCameras, startX + xSize / 2 - font.width(selectCameras) / 2, startY + 6, 4210752);
+		font.draw(pose, title, startX + xSize / 2 - font.width(title) / 2, startY + 6, 4210752);
 
 		for (int i = 0; i < hoverCheckers.length; i++) {
 			if (hoverCheckers[i] != null && hoverCheckers[i].checkHover(mouseX, mouseY)) {
