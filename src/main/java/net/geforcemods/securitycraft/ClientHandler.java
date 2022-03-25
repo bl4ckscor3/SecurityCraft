@@ -529,8 +529,8 @@ public class ClientHandler {
 		Minecraft.getInstance().setScreen(new EditModuleScreen(stack));
 	}
 
-	public static void displayCameraMonitorGui(Inventory inv, CameraMonitorItem item, CompoundTag stackTag) {
-		Minecraft.getInstance().setScreen(new CameraMonitorScreen(inv, item, stackTag));
+	public static void displayCameraMonitorGui(Inventory inv, CameraMonitorItem item, CompoundTag stackTag, BlockPos framePos, boolean frame) {
+		Minecraft.getInstance().setScreen(new CameraMonitorScreen(inv, item, stackTag, framePos, frame));
 	}
 
 	public static void displaySCManualGui() {

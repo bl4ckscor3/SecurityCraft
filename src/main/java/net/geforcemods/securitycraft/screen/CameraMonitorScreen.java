@@ -9,6 +9,7 @@ import net.geforcemods.securitycraft.SCContent;
 import net.geforcemods.securitycraft.SecurityCraft;
 import net.geforcemods.securitycraft.blockentities.SecurityCameraBlockEntity;
 import net.geforcemods.securitycraft.items.CameraMonitorItem;
+import net.geforcemods.securitycraft.network.server.ActivateFrame;
 import net.geforcemods.securitycraft.network.server.MountCamera;
 import net.geforcemods.securitycraft.network.server.RemoveCameraTag;
 import net.geforcemods.securitycraft.screen.components.HoverChecker;
@@ -17,6 +18,7 @@ import net.geforcemods.securitycraft.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -39,16 +41,20 @@ public class CameraMonitorScreen extends Screen {
 	private ResourceLocation[] cameraViewDim = new ResourceLocation[10];
 	private int xSize = 176, ySize = 166;
 	private int page = 1;
+	private BlockPos framePos;
+	private boolean frame;
 
-	public CameraMonitorScreen(Inventory inventory, CameraMonitorItem item, CompoundTag itemNBTTag) {
+	public CameraMonitorScreen(Inventory inventory, CameraMonitorItem item, CompoundTag itemNBTTag, BlockPos framePos, boolean frame) {
 		super(new TranslatableComponent(SCContent.CAMERA_MONITOR.get().getDescriptionId()));
 		playerInventory = inventory;
 		cameraMonitor = item;
 		nbtTag = itemNBTTag;
+		this.framePos = framePos;
+		this.frame = frame;
 	}
 
-	public CameraMonitorScreen(Inventory inventory, CameraMonitorItem item, CompoundTag itemNBTTag, int page) {
-		this(inventory, item, itemNBTTag);
+	public CameraMonitorScreen(Inventory inventory, CameraMonitorItem item, CompoundTag itemNBTTag, int page, BlockPos framePos, boolean frame) {
+		this(inventory, item, itemNBTTag, framePos, frame);
 		this.page = page;
 	}
 
@@ -56,8 +62,8 @@ public class CameraMonitorScreen extends Screen {
 	public void init() {
 		super.init();
 
-		Button prevPageButton = addRenderableWidget(new ExtendedButton(width / 2 - 68, height / 2 + 40, 20, 20, new TextComponent("<"), b -> minecraft.setScreen(new CameraMonitorScreen(playerInventory, cameraMonitor, nbtTag, page - 1))));
-		Button nextPageButton = addRenderableWidget(new ExtendedButton(width / 2 + 52, height / 2 + 40, 20, 20, new TextComponent(">"), b -> minecraft.setScreen(new CameraMonitorScreen(playerInventory, cameraMonitor, nbtTag, page + 1))));
+		Button prevPageButton = addRenderableWidget(new ExtendedButton(width / 2 - 68, height / 2 + 40, 20, 20, new TextComponent("<"), b -> minecraft.setScreen(new CameraMonitorScreen(playerInventory, cameraMonitor, nbtTag, page - 1, framePos, frame))));
+		Button nextPageButton = addRenderableWidget(new ExtendedButton(width / 2 + 52, height / 2 + 40, 20, 20, new TextComponent(">"), b -> minecraft.setScreen(new CameraMonitorScreen(playerInventory, cameraMonitor, nbtTag, page + 1, framePos, frame))));
 		TextComponent x = new TextComponent("x");
 
 		cameraButtons[0] = new CameraButton(1, width / 2 - 38, height / 2 - 60 + 10, 20, 20, TextComponent.EMPTY, this::cameraButtonClicked);
@@ -144,9 +150,14 @@ public class CameraMonitorScreen extends Screen {
 	}
 
 	private void cameraButtonClicked(Button button) {
-		int camID = ((CameraButton) button).camId + (page - 1) * 10;
+		if (frame)
+			SecurityCraft.channel.sendToServer(new ActivateFrame(framePos));
+		else {
+			int camID = ((CameraButton) button).camId + (page - 1) * 10;
 
-		SecurityCraft.channel.sendToServer(new MountCamera(cameraMonitor.getCameraPositions(nbtTag).get(camID - 1).pos()));
+			SecurityCraft.channel.sendToServer(new MountCamera(cameraMonitor.getCameraPositions(nbtTag).get(camID - 1).pos()));
+		}
+
 		Minecraft.getInstance().player.closeContainer();
 	}
 
