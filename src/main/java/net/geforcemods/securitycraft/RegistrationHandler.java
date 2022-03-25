@@ -211,7 +211,7 @@ public class RegistrationHandler {
 		event.getRegistry().register(BlockEntityType.Builder.of(KeyPanelBlockEntity::new, SCContent.KEY_PANEL_BLOCK.get()).build(null).setRegistryName(new ResourceLocation(SecurityCraft.MODID, "key_panel")));
 		event.getRegistry().register(BlockEntityType.Builder.of(SonicSecuritySystemBlockEntity::new, SCContent.SONIC_SECURITY_SYSTEM.get()).build(null).setRegistryName(new ResourceLocation(SecurityCraft.MODID, "sonic_security_system")));
 		event.getRegistry().register(BlockEntityType.Builder.of(BlockChangeDetectorBlockEntity::new, SCContent.BLOCK_CHANGE_DETECTOR.get()).build(null).setRegistryName(new ResourceLocation(SecurityCraft.MODID, "block_change_detector")));
-		event.getRegistry().register(BlockEntityType.Builder.of(OwnableBlockEntity::new, SCContent.FRAME.get()).build(null).setRegistryName(new ResourceLocation(SecurityCraft.MODID, "frame")));
+		event.getRegistry().register(BlockEntityType.Builder.of((pos, state) -> new OwnableBlockEntity(SCContent.beTypeFrame, pos, state), SCContent.FRAME.get()).build(null).setRegistryName(new ResourceLocation(SecurityCraft.MODID, "frame")));
 	}
 
 	@SubscribeEvent
