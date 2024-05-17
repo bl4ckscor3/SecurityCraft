@@ -3,4 +3,4 @@ append_commit_message:
 commit_message: Update %language% translation
 files:
   - source: src/main/resources/assets/securitycraft/lang/en_us.json
-    translation: src/main/resources/assets/securitycraft/lang/%locale_with_underscores%.json
+    translation: src/main/resources/assets/securitycraft/lang/%locale_with_underscore%.json
