@@ -1,11 +1,11 @@
-name: Crowdin translations PR
+name: Crowdin PR
 
 #on:
 #  schedule:
 #    - cron: '0 */1 * * *' # Every hour - https://crontab.guru/#0_*/1_*_*_*
 
 on:
-  workflow-dispatch:
+  workflow_dispatch:
 
 jobs:
   crowdin-pr:
