@@ -1,11 +1,8 @@
 name: Crowdin Pull Request
 
-#on:
-#  schedule:
-#    - cron: '0 */1 * * *' # Every hour - https://crontab.guru/#0_*/1_*_*_*
-
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '0 */1 * * *' # Every hour - https://crontab.guru/#0_*/1_*_*_*
 
 permissions:
   contents: write
