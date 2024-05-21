@@ -30,6 +30,7 @@ jobs:
           pull_request_title: 'Update translations from Crowdin'
           pull_request_body: ''
           pull_request_base_branch_name: '1.20.4'
+          commit_message: 'Update translations from Crowdin'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
